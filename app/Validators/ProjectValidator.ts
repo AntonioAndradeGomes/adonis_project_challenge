@@ -13,11 +13,22 @@ export default class ProjectValidator {
     zip_code: schema.string([
       rules.minLength(8),
       rules.maxLength(8),
-      rules.alphaNum(),
+      rules.regex(/^[0-9]{8}$/),
     ]),
-    deadline: schema.date(),
+    deadline: schema.date({}, [rules.afterOrEqual("today")]),
     cost: schema.number(),
   });
-  //todo: costumizar mensagens
-  public messages: CustomMessages = {};
+
+  public messages: CustomMessages = {
+    "title.min": "O campo title está muito pequeno",
+    "title.max": "O campo title tem mais que 255 caracteres",
+    "title.alphaNum": "O campo title deve ter somente letras e números",
+    "zip_code.regex":
+      "O campo zip_code 'cep' está inválido, deve conter somente números",
+    "zip_code.min":
+      "O campo zip_code 'cep' está inválido, deve ter 8 caracteres",
+    "zip_code.max":
+      "O campo zip_code 'cep' está inválido, deve ter 8 caracteres",
+    "cost.number": "O campo cost é um valor númerico real",
+  };
 }

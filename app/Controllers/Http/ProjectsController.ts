@@ -82,7 +82,39 @@ export default class ProjectsController {
     const search = await axios.get(
       "https://viacep.com.br/ws/" + project.zip_code + "/json/"
     );
-    //todo: tratar erros na busca do via cep
+    //tratando os erros
+    if(search.status != 200){
+      return {
+        id: project.id,
+        title: project.title,
+        localization: {
+          erro: 'Localização não encontrada por problemas ao se conectar com a api do viacep'
+        },
+        zip_code: project.zip_code,
+        cost: project.cost,
+        done: project.done,
+        deadline: project.deadline,
+        username: project.user.username,
+        created_at: project.createdAt,
+        updated_at: project.updatedAt,
+      };
+    }
+    if(search.status == 200 && search.data.erro == true){
+      return {
+        id: project.id,
+        title: project.title,
+        localization: {
+          erro: `A localização não pode ser mostrada pois o zip_code 'cep', não existe entre os ceps brasileiros`,
+        },
+        zip_code: project.zip_code,
+        cost: project.cost,
+        done: project.done,
+        deadline: project.deadline,
+        username: project.user.username,
+        created_at: project.createdAt,
+        updated_at: project.updatedAt,
+      };
+    }
 
     //retornar o que foi pedido
     return {
@@ -126,6 +158,7 @@ export default class ProjectsController {
     return response.noContent();
   }
 
+  //atualizar um project
   public async update({ response, request }: HttpContextContract) {
     //pegar o id dos parametros
     const projectId = request.param("id");
