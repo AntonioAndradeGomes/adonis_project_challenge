@@ -99,7 +99,7 @@ export default class ProjectsController {
         updated_at: project.updatedAt,
       };
     }
-    if(search.status == 200 && search.data.erro == true){
+    if(search.status == 200 && (search.data.erro == true || search.data.erro == 'true')){
       return {
         id: project.id,
         title: project.title,
